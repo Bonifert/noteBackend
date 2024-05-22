@@ -2,8 +2,6 @@ package service
 
 import (
 	"awesomeProject/config"
-	"awesomeProject/database"
-	"awesomeProject/model"
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -18,12 +16,11 @@ type JwtCustomClaims struct {
 }
 
 func Authenticate(username string, password string) (string, error) {
-	user := model.User{}
-	result := database.DB.Where("Username = ?", username).First(&user)
-	if result.Error != nil {
+	user, err := getUserByName(username)
+	if err != nil {
 		return "", errors.New("invalid username or password")
 	}
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		return "", errors.New("invalid username or password")
 	}
@@ -47,13 +44,4 @@ func generateJWT(username string, id uint) (string, error) {
 		return "", err
 	}
 	return signedToken, nil
-}
-
-func GetUser(id uint) (*model.User, error) {
-	user := model.User{}
-	result := database.DB.Preload("Notes").Table("users").Where("ID = ?", id).First(&user)
-	if result.Error != nil {
-		return &model.User{}, result.Error
-	}
-	return &user, nil
 }
