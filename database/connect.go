@@ -1,25 +1,25 @@
 package database
 
 import (
+	"awesomeProject/config"
 	"awesomeProject/model"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
-	"os"
 )
 
 var DB *gorm.DB
 
 func ConnectDB() {
-	host := os.Getenv("HOST")
-	user := os.Getenv("USER")
-	password := os.Getenv("PASSWORD")
-	dbname := os.Getenv("DBNAME")
-	port := os.Getenv("PORT")
-	sslmode := os.Getenv("SSLMODE")
-	timezone := os.Getenv("TIMEZONE")
+	host := config.Config("HOST")
+	user := config.Config("USER")
+	password := config.Config("PASSWORD")
+	dbname := config.Config("DBNAME")
+	port := config.Config("PORT")
+	sslmode := config.Config("SSLMODE")
+	timezone := config.Config("TIMEZONE")
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
 		host, user, password, dbname, port, sslmode, timezone)
