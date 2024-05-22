@@ -13,6 +13,8 @@
 # Dependency directories (vendor directory)
 /vendor/
 
+.env
+
 # Go workspace file
 go.work
 go.work.sum
