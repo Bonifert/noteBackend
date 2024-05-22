@@ -1,3 +1,38 @@
-*.iml*
+# Ignore binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
 
-.idea
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (vendor directory)
+/vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# IDE temporary files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+*.log
+*.lock
+*.orig
+*.rej
+*.un~*
+
+# OS generated files
+.DS_Store*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
