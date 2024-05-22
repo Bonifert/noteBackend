@@ -41,7 +41,8 @@ func generateJWT(username string, id uint) (string, error) {
 		}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	signedToken, err := token.SignedString(config.Config("SECRET_KEY"))
+	secretKey := config.Config("SECRET_KEY")
+	signedToken, err := token.SignedString([]byte(secretKey))
 	if err != nil {
 		return "", err
 	}
