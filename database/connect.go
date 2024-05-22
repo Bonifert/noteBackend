@@ -13,11 +13,11 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	host := config.Config("HOST")
-	user := config.Config("USER")
-	password := config.Config("PASSWORD")
-	dbname := config.Config("DBNAME")
-	port := config.Config("PORT")
+	host := config.Config("DB_HOST")
+	user := config.Config("DB_USER")
+	password := config.Config("DB_PASSWORD")
+	dbname := config.Config("DB_NAME")
+	port := config.Config("DB_PORT")
 	sslmode := config.Config("SSLMODE")
 	timezone := config.Config("TIMEZONE")
 	dsn := fmt.Sprintf(

@@ -1,0 +1,8 @@
+# Create a db name, username and password
+# !!! rename the file to .env !!!
+SECRET_KEY=<secret key>
+DBNAME=<db name>
+USER=<username>
+PASSWORD=<password>
+HOST=psql
+PORT=5432
