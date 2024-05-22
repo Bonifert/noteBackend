@@ -10,10 +10,6 @@ import (
 	"os"
 )
 
-type DbInstance struct {
-	Db *gorm.DB
-}
-
 var DB *gorm.DB
 
 func ConnectDB() {
