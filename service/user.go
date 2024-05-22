@@ -8,6 +8,7 @@ import (
 )
 
 func CreateUser(newUser *dto.NewUser) (uint, error) {
+	db := database.DB
 	password, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return 0, err
@@ -16,16 +17,17 @@ func CreateUser(newUser *dto.NewUser) (uint, error) {
 		Username: newUser.Username,
 		Password: string(password),
 	}
-	result := database.DB.Create(user)
+	result := db.Create(&user)
 	if result.Error != nil {
 		return 0, result.Error
 	}
 	return user.ID, nil
 }
 
-func GetUserByName(username string) (model.User, error) {
+func getUserByName(username string) (model.User, error) {
+	db := database.DB
 	user := model.User{}
-	result := database.DB.Where("Username = ?", username).First(&user)
+	result := db.Where("Username = ?", username).First(&user)
 	if result.Error != nil {
 		return model.User{}, result.Error
 	}
