@@ -22,8 +22,10 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 
 	newNote.UserID = uint(id)
 
-	if err := validator.Validate.Struct(newNote); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := validator.ValidateStruct(newNote); len(err) != 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		sendJSONResponse(w, err) // TODO content-type is text instead of application/json
+		return
 	}
 
 	noteId, err := service.CreateNote(&newNote)
