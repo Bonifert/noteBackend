@@ -2,7 +2,6 @@ package handler
 
 import (
 	"awesomeProject/dto"
-	"awesomeProject/model"
 	"awesomeProject/service"
 	"awesomeProject/validator"
 	"encoding/json"
@@ -10,27 +9,6 @@ import (
 	"net/http"
 	"strconv"
 )
-
-func Login(w http.ResponseWriter, r *http.Request) {
-	var loginInfo model.User
-	if err := json.NewDecoder(r.Body).Decode(&loginInfo); err != nil {
-		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
-		return
-	}
-
-	if err := validator.Validate.Struct(loginInfo); err != nil {
-		http.Error(w, "Invalid user", http.StatusBadRequest)
-		return
-	}
-
-	jwt, err := service.Authenticate(loginInfo.Username, loginInfo.Password)
-	if err != nil {
-		http.Error(w, "Invalid username or password", http.StatusBadRequest)
-		return
-	}
-
-	w.Header().Set("Authorization", "Bearer "+jwt)
-}
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var newUser dto.NewUser
