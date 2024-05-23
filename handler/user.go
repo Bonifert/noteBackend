@@ -5,7 +5,9 @@ import (
 	"awesomeProject/service"
 	"awesomeProject/validator"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/jackc/pgx/v5/pgconn"
 	"net/http"
 	"strconv"
 )
@@ -78,11 +80,8 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid token", http.StatusUnauthorized)
 		return
 	}
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "invalid token", http.StatusUnauthorized)
-		return
-	}
+	id, _ := strconv.Atoi(idStr)
+
 	fmt.Println(id)
 	user, err := service.GetUserById(uint(id))
 	if err != nil {
