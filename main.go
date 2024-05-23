@@ -12,13 +12,14 @@ func main() {
 
 	router := http.NewServeMux()
 	router.HandleFunc("POST /user", handler.CreateUser)
-	router.HandleFunc("POST /user/login", handler.Login)
+	router.HandleFunc("POST /auth/login", handler.Login)
 
 	protectedRouter := http.NewServeMux()
+	protectedRouter.HandleFunc("GET /user/me", handler.GetMe)
 	protectedRouter.HandleFunc("GET /user/{id}", handler.GetUser)
-	protectedRouter.HandleFunc("GET /me", handler.GetMe)
 	protectedRouter.HandleFunc("POST /note", handler.CreateNote)
-	protectedRouter.HandleFunc("GET /note", handler.GetNote)
+	protectedRouter.HandleFunc("GET /note/{id}", handler.GetNote)
+	protectedRouter.HandleFunc("DELETE /user/me", handler.DeleteMe)
 
 	router.Handle("/", middleware.AuthenticateMiddleware(protectedRouter))
 	server := http.Server{
