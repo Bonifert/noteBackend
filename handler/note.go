@@ -35,18 +35,31 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	m := make(map[string]uint)
 	m["id"] = noteId
-	SendJSONResponse(w, m)
+	sendJSONResponse(w, m)
 }
 
 func GetNote(w http.ResponseWriter, r *http.Request) {
-	idStr := r.PathValue("id")
-	id, err := strconv.Atoi(idStr)
+	userIdStr := r.PathValue("id")
+	id, err := strconv.Atoi(userIdStr)
 	if err != nil {
-		http.Error(w, "invalid note id", http.StatusBadRequest)
+		http.Error(w, "invalid parameter", http.StatusBadRequest)
+		return
 	}
 	note, err := service.GetNote(uint(id))
 	if err != nil {
-		http.Error(w, "failed to get note", http.StatusInternalServerError)
+		http.Error(w, "note not found", http.StatusNotFound)
+		return
 	}
-	SendJSONResponse(w, note)
+	userIdStr, ok := r.Context().Value("id").(string)
+	if !ok {
+		http.Error(w, "invalid token", http.StatusUnauthorized)
+		return
+	}
+	userId, _ := strconv.Atoi(userIdStr)
+
+	if note.UserID != uint(userId) {
+		http.Error(w, "access denied", http.StatusForbidden)
+		return
+	}
+	sendJSONResponse(w, note)
 }
