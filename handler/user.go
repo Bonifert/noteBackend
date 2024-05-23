@@ -11,14 +11,15 @@ import (
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	var newUser dto.NewUser
+	var newUser dto.UsernameAndPassword
 	if err := json.NewDecoder(r.Body).Decode(&newUser); err != nil {
 		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
 		return
 	}
 
-	if err := validator.Validate.Struct(newUser); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err := validator.ValidateStruct(newUser); len(err) != 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		sendJSONResponse(w, err) // TODO idk why, but the content-type is text instead of application/json
 		return
 	}
 
