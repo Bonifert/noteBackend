@@ -35,11 +35,24 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "the creation was not successful, unexpected error occurred", http.StatusInternalServerError)
 		return
 	}
-
-	w.WriteHeader(http.StatusCreated)
 	m := make(map[string]uint)
 	m["id"] = id
-	SendJSONResponse(w, m)
+	w.WriteHeader(http.StatusCreated)
+	sendJSONResponse(w, m)
+}
+
+func DeleteMe(w http.ResponseWriter, r *http.Request) {
+	idStr, ok := r.Context().Value("id").(string)
+	if !ok {
+		http.Error(w, "invalid token", http.StatusUnauthorized)
+		return
+	}
+	id, _ := strconv.Atoi(idStr)
+
+	err := service.DeleteUserById(uint(id))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusConflict)
+	}
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +69,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendJSONResponse(w, user)
+	sendJSONResponse(w, user)
 }
 
 func GetMe(w http.ResponseWriter, r *http.Request) {
@@ -77,10 +90,10 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendJSONResponse(w, user)
+	sendJSONResponse(w, user)
 }
 
-func SendJSONResponse(w http.ResponseWriter, data interface{}) {
+func sendJSONResponse(w http.ResponseWriter, data interface{}) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
