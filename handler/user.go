@@ -25,7 +25,14 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	id, err := service.CreateUser(&newUser)
 	if err != nil {
-		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+		var pgError *pgconn.PgError
+		if errors.As(err, &pgError) {
+			if pgError.Code == "23505" {
+				http.Error(w, "username is already taken", http.StatusConflict)
+				return
+			}
+		}
+		http.Error(w, "the creation was not successful, unexpected error occurred", http.StatusInternalServerError)
 		return
 	}
 
