@@ -18,10 +18,8 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		http.Error(w, "invalid token", http.StatusUnauthorized)
 	}
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "invalid token", http.StatusUnauthorized)
-	}
+	id, _ := strconv.Atoi(idStr)
+
 	newNote.UserID = uint(id)
 
 	if err := validator.Validate.Struct(newNote); err != nil {
