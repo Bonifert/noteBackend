@@ -4,10 +4,12 @@ import (
 	"awesomeProject/database"
 	"awesomeProject/dto"
 	"awesomeProject/model"
+	"errors"
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CreateUser(newUser *dto.NewUser) (uint, error) {
+func CreateUser(newUser *dto.UsernameAndPassword) (uint, error) {
 	db := database.DB
 	password, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -17,19 +19,19 @@ func CreateUser(newUser *dto.NewUser) (uint, error) {
 		Username: newUser.Username,
 		Password: string(password),
 	}
-	result := db.Create(&user)
-	if result.Error != nil {
-		return 0, result.Error
+	err = db.Create(&user).Error
+	if err != nil {
+		return 0, err
 	}
 	return user.ID, nil
 }
 
-func getUserByName(username string) (model.User, error) {
+func GetUserByUsername(username string) (model.User, error) {
 	db := database.DB
 	user := model.User{}
 	result := db.Where("Username = ?", username).First(&user)
 	if result.Error != nil {
-		return model.User{}, result.Error
+		return model.User{}, errors.New("user not found")
 	}
 	return user, nil
 }
@@ -38,7 +40,21 @@ func GetUserById(userId uint) (model.User, error) {
 	user := model.User{}
 	result := database.DB.Where("ID = ?", userId).First(&user)
 	if result.Error != nil {
-		return model.User{}, result.Error
+		return model.User{}, errors.New("user not found")
 	}
 	return user, nil
+}
+
+func DeleteUserById(userId uint) error {
+	user := model.User{}
+	result := database.DB.Where("ID = ?", userId).Delete(&user)
+	fmt.Println(result.RowsAffected)
+	if result.Error != nil {
+		fmt.Println(result.Error.Error())
+		return errors.New("unexpected error occurred")
+	}
+	if result.RowsAffected == 0 {
+		return errors.New("user already deleted")
+	}
+	return nil
 }

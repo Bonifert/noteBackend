@@ -16,7 +16,7 @@ type JwtCustomClaims struct {
 }
 
 func Authenticate(username string, password string) (string, error) {
-	user, err := getUserByName(username)
+	user, err := GetUserByUsername(username)
 	if err != nil {
 		return "", errors.New("invalid username or password")
 	}
