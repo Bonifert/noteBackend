@@ -6,7 +6,6 @@ import (
 	"awesomeProject/validator"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/jackc/pgx/v5/pgconn"
 	"net/http"
 	"strconv"
@@ -82,7 +81,6 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 	}
 	id, _ := strconv.Atoi(idStr)
 
-	fmt.Println(id)
 	user, err := service.GetUserById(uint(id))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)

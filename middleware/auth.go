@@ -30,14 +30,12 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
 
 		if err != nil || !token.Valid {
 			http.Error(w, "Invalid token", http.StatusUnauthorized)
-			fmt.Println(err)
 			return
 		}
 
 		claims, ok := token.Claims.(*service.JwtCustomClaims)
 		if !ok {
 			http.Error(w, "Invalid token", http.StatusUnauthorized)
-			fmt.Println(claims)
 			return
 		}
 		ctx := context.WithValue(r.Context(), "id", claims.ID)

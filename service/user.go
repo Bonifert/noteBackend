@@ -5,7 +5,6 @@ import (
 	"awesomeProject/dto"
 	"awesomeProject/model"
 	"errors"
-	"fmt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -48,9 +47,7 @@ func GetUserById(userId uint) (model.User, error) {
 func DeleteUserById(userId uint) error {
 	user := model.User{}
 	result := database.DB.Where("ID = ?", userId).Delete(&user)
-	fmt.Println(result.RowsAffected)
 	if result.Error != nil {
-		fmt.Println(result.Error.Error())
 		return errors.New("unexpected error occurred")
 	}
 	if result.RowsAffected == 0 {
