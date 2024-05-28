@@ -1,8 +1,8 @@
 package dto
 
 type UsernameAndPassword struct {
-	Username string `json:"username" validate:"required,gte=2,lte=255"`
-	Password string `json:"password" validate:"required,gte=2,lte=255"`
+	Username string `json:"username" validate:"required,gte=2,lte=20"`
+	Password string `json:"password" validate:"required,gte=2,lte=20"`
 }
 
 type UserInfo struct {
@@ -13,4 +13,24 @@ type UserInfo struct {
 type ErrorMessage struct {
 	Errors any    `json:"errors"`
 	Status string `json:"status"`
+}
+
+type NewUsername struct {
+	NewUsername string `json:"username" validate:"required,gte=1,lte=20"`
+	Password    string `json:"password" validate:"required"`
+}
+
+type NewPassword struct {
+	NewPassword string `json:"newPassword" validate:"required,gte=1,lte=20"`
+	Password    string `json:"password" validate:"required"`
+}
+
+type EditNoteTitle struct {
+	NewTitle string `json:"newName" validate:"validate,gte=1,lte=20"`
+	ID       int    `json:"id" validate:"required"`
+}
+
+type EditNoteContent struct {
+	NewContent string `json:"newContent" validate:"required"`
+	ID         int    `json:"id" validate:"required"`
 }
