@@ -3,6 +3,14 @@ package service
 import (
 	"awesomeProject/database"
 	"awesomeProject/model"
+	"errors"
+)
+
+var (
+	ErrForbidden    = errors.New("access forbidden")
+	ErrNotFound     = errors.New("not found")
+	ErrUnauthorized = errors.New("unauthorized")
+	ErrDuplicated   = errors.New("duplicated")
 )
 
 func CreateNote(newNote *model.Note) (uint, error) {
