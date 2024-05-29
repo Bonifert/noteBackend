@@ -20,6 +20,12 @@ func CreateUser(newUser *dto.UsernameAndPassword) (uint, error) {
 	}
 	err = db.Create(&user).Error
 	if err != nil {
+		var pgError *pgconn.PgError
+		if errors.As(err, &pgError) {
+			if pgError.Code == "23505" {
+				return 0, ErrDuplicated
+			}
+		}
 		return 0, err
 	}
 	return user.ID, nil
