@@ -31,6 +31,48 @@ func CreateUser(newUser *dto.UsernameAndPassword) (uint, error) {
 	return user.ID, nil
 }
 
+func EditUsernameById(id uint, editUser *dto.NewUsername) error {
+	db := database.DB
+	user := model.User{}
+	result := db.First(&user, "ID = ?", id)
+	if result.Error != nil {
+		return ErrNotFound
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(editUser.Password)); err != nil {
+		return ErrUnauthorized
+	}
+	user.Username = editUser.NewUsername
+	err := db.Save(&user).Error
+	if err != nil {
+		var pgError *pgconn.PgError
+		if errors.As(err, &pgError) {
+			if pgError.Code == "23505" {
+				return ErrDuplicated
+			}
+		}
+	}
+	return nil
+}
+
+func EditPasswordById(id uint, editPassword dto.NewPassword) error {
+	db := database.DB
+	user := model.User{}
+	result := db.First(&user, "ID = ?", id)
+	if result.Error != nil {
+		return ErrNotFound
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(editPassword.Password)); err != nil {
+		return ErrUnauthorized
+	}
+	newPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(newPassword)
+	db.Save(&user)
+	return nil
+}
+
 func GetUserByUsername(username string) (model.User, error) {
 	db := database.DB
 	user := model.User{}
