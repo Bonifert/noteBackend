@@ -6,7 +6,6 @@ import (
 	"awesomeProject/validator"
 	"encoding/json"
 	"errors"
-	"github.com/jackc/pgx/v5/pgconn"
 	"net/http"
 	"strconv"
 )
@@ -88,6 +87,70 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 	sendJSONResponse(w, user)
 }
 
+func EditUsername(w http.ResponseWriter, r *http.Request) {
+	idStr, ok := r.Context().Value("id").(string)
+	if !ok {
+		http.Error(w, "invalid token", http.StatusUnauthorized)
+	}
+	id, _ := strconv.Atoi(idStr)
+
+	var editUsername dto.NewUsername
+	if err := json.NewDecoder(r.Body).Decode(&editUsername); err != nil {
+		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
+		return
+	}
+
+	if err := validator.ValidateStruct(editUsername); len(err) != 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		sendJSONResponse(w, err)
+		return
+	}
+
+	err := service.EditUsernameById(uint(id), &editUsername)
+	if err != nil {
+		switch {
+		case errors.Is(err, service.ErrUnauthorized):
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+		case errors.Is(err, service.ErrNotFound):
+			http.Error(w, "user not found", http.StatusNotFound)
+		case errors.Is(err, service.ErrDuplicated):
+			http.Error(w, "username is already taken", http.StatusConflict)
+		default:
+			http.Error(w, "failed to edit username", http.StatusInternalServerError)
+		}
+		return
+	}
+}
+
+func EditPassword(w http.ResponseWriter, r *http.Request) {
+	idStr, ok := r.Context().Value("id").(string)
+	if !ok {
+		http.Error(w, "invalid token", http.StatusUnauthorized)
+	}
+	id, _ := strconv.Atoi(idStr)
+	var editPassword dto.NewPassword
+	if err := json.NewDecoder(r.Body).Decode(&editPassword); err != nil {
+		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
+	}
+	if err := validator.ValidateStruct(editPassword); len(err) != 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		sendJSONResponse(w, err)
+	}
+
+	err := service.EditPasswordById(uint(id), editPassword)
+	if err != nil {
+		switch {
+		case errors.Is(err, service.ErrUnauthorized):
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+		case errors.Is(err, service.ErrNotFound):
+			http.Error(w, "user not found", http.StatusNotFound)
+		default:
+			http.Error(w, "failed to edit password", http.StatusInternalServerError)
+		}
+	}
+}
+
+// TODO idk why, but the content-type is text instead of application/json
 func sendJSONResponse(w http.ResponseWriter, data interface{}) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
