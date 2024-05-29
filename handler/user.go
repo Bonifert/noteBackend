@@ -20,20 +20,18 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	if err := validator.ValidateStruct(newUser); len(err) != 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		sendJSONResponse(w, err) // TODO idk why, but the content-type is text instead of application/json
+		sendJSONResponse(w, err)
 		return
 	}
 
 	id, err := service.CreateUser(&newUser)
 	if err != nil {
-		var pgError *pgconn.PgError
-		if errors.As(err, &pgError) {
-			if pgError.Code == "23505" {
-				http.Error(w, "username is already taken", http.StatusConflict)
-				return
-			}
+		switch {
+		case errors.Is(err, service.ErrDuplicated):
+			http.Error(w, "Username is already taken", http.StatusConflict)
+		default:
+			http.Error(w, "failed to create the user", http.StatusInternalServerError)
 		}
-		http.Error(w, "the creation was not successful, unexpected error occurred", http.StatusInternalServerError)
 		return
 	}
 	m := make(map[string]uint)
