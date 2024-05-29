@@ -79,7 +79,7 @@ func GetUserByUsername(username string) (model.User, error) {
 	user := model.User{}
 	result := db.Where("Username = ?", username).First(&user)
 	if result.Error != nil {
-		return model.User{}, errors.New("user not found")
+		return model.User{}, ErrNotFound
 	}
 	return user, nil
 }
@@ -88,7 +88,7 @@ func GetUserById(userId uint) (model.User, error) {
 	user := model.User{}
 	result := database.DB.Where("ID = ?", userId).First(&user)
 	if result.Error != nil {
-		return model.User{}, errors.New("user not found")
+		return model.User{}, ErrNotFound
 	}
 	return user, nil
 }
