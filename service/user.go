@@ -5,6 +5,7 @@ import (
 	"awesomeProject/dto"
 	"awesomeProject/model"
 	"errors"
+	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"
 )
 
