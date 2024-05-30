@@ -25,7 +25,7 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 
 	if err := validator.ValidateStruct(newNote); len(err) != 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		sendJSONResponse(w, err) // TODO content-type is text instead of application/json
+		sendJSONResponse(w, err)
 		return
 	}
 
