@@ -155,8 +155,7 @@ func EditPassword(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// TODO idk why, but the content-type is text instead of application/json
-func sendJSONResponse(w http.ResponseWriter, data interface{}) {
+func sendJSONResponse(w http.ResponseWriter, data interface{}, statusCode int) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -164,6 +163,7 @@ func sendJSONResponse(w http.ResponseWriter, data interface{}) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
 	_, err = w.Write(jsonData)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
