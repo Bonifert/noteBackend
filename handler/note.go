@@ -13,13 +13,14 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	var newNote model.Note
 	if err := json.NewDecoder(r.Body).Decode(&newNote); err != nil {
 		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
+		return
 	}
 	idStr, ok := r.Context().Value("id").(string)
 	if !ok {
 		http.Error(w, "invalid token", http.StatusUnauthorized)
+		return
 	}
 	id, _ := strconv.Atoi(idStr)
-
 	newNote.UserID = uint(id)
 
 	if err := validator.ValidateStruct(newNote); len(err) != 0 {
