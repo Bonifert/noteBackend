@@ -160,20 +160,22 @@ func GetNote(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid parameter", http.StatusBadRequest)
 		return
 	}
-	note, err := service.GetNote(uint(id))
-	if err != nil {
-		http.Error(w, "note not found", http.StatusNotFound)
-		return
-	}
 	userIdStr, ok := r.Context().Value("id").(string)
 	if !ok {
 		http.Error(w, "invalid token", http.StatusUnauthorized)
 		return
 	}
 	userId, _ := strconv.Atoi(userIdStr)
-
-	if note.UserID != uint(userId) {
-		http.Error(w, "access denied", http.StatusForbidden)
+	note, err := service.GetNote(uint(id), uint(userId))
+	if err != nil {
+		switch {
+		case errors.Is(err, service.ErrNotFound):
+			http.Error(w, "note not found", http.StatusNotFound)
+		case errors.Is(err, service.ErrForbidden):
+			http.Error(w, "permission denied", http.StatusForbidden)
+		default:
+			http.Error(w, "failed to get note", http.StatusInternalServerError)
+		}
 		return
 	}
 	sendJSONResponse(w, note)
