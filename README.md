@@ -7,10 +7,7 @@ for authenticated users to create notes. This project was undertaken to explore 
 focusing on simplicity and practicality, especially since the primary backend language of 
 the developer is Java.
 
-## Project Status
-This project is currently in the Work-In-Progress (WIP) phase. Initial development is underway, focusing on creating a backend system utilizing Go, PostgreSQL, and GORM. The goal is to implement user registration, authentication using JWT tokens, and note creation functionalities. While the core features are being developed, please note that the application is not yet complete and may undergo changes as development progresses.
-
-## Technologies Use:
+## Technologies Used:
 * Backend: Go
 * HTTP Package: net/http for managing HTTP requests and responses
 * Database: PostgreSQL
@@ -28,10 +25,16 @@ This project is currently in the Work-In-Progress (WIP) phase. Initial developme
 
 ### Installation
 1. Clone the repository to your local machine.
-2. Navigate to the project directory.
-3. Ensure you have a PostgreSQL database running and accessible.
+```shell
+git clone https://github.com/Bonifert/noteBackend
+```
+2. Navigate to the project directory.<br><br>
+3. Ensure you have a PostgreSQL database running and accessible.<br><br>
 4. Fill in the missing fields in the .envtemplate with the data required for the database connection, and rename it to ".env".
 
 ### Usage:
 
-Run the application using go run main.go.
+Run the application using:
+```shell
+go run main.go
+```
