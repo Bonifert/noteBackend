@@ -18,8 +18,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := validator.ValidateStruct(newUser); len(err) != 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		sendJSONResponse(w, err)
+		errBody := dto.ErrorMessage{Errors: err, Status: http.StatusBadRequest}
+		sendJSONResponse(w, errBody, http.StatusBadRequest)
 		return
 	}
 
@@ -35,8 +35,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	m := make(map[string]uint)
 	m["id"] = id
-	w.WriteHeader(http.StatusCreated)
-	sendJSONResponse(w, m)
+	sendJSONResponse(w, m, http.StatusCreated)
 }
 
 func DeleteMe(w http.ResponseWriter, r *http.Request) {
@@ -72,7 +71,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sendJSONResponse(w, user)
+	sendJSONResponse(w, user, http.StatusOK)
 }
 
 func GetMe(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +88,7 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sendJSONResponse(w, user)
+	sendJSONResponse(w, user, http.StatusOK)
 }
 
 func EditUsername(w http.ResponseWriter, r *http.Request) {
@@ -106,8 +105,8 @@ func EditUsername(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := validator.ValidateStruct(editUsername); len(err) != 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		sendJSONResponse(w, err)
+		errBody := dto.ErrorMessage{Errors: err, Status: http.StatusBadRequest}
+		sendJSONResponse(w, errBody, http.StatusBadRequest)
 		return
 	}
 
@@ -138,8 +137,8 @@ func EditPassword(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
 	}
 	if err := validator.ValidateStruct(editPassword); len(err) != 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		sendJSONResponse(w, err)
+		errBody := dto.ErrorMessage{Errors: err, Status: http.StatusBadRequest}
+		sendJSONResponse(w, errBody, http.StatusBadRequest)
 	}
 
 	err := service.EditPasswordById(uint(id), editPassword)

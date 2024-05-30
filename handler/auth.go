@@ -16,8 +16,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := validator.ValidateStruct(loginInfo); len(err) != 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		sendJSONResponse(w, err)
+		errBody := dto.ErrorMessage{Errors: err, Status: http.StatusBadRequest}
+		sendJSONResponse(w, errBody, http.StatusBadRequest)
 		return
 	}
 

@@ -26,8 +26,8 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	newNote.UserID = uint(id)
 
 	if err := validator.ValidateStruct(newNote); len(err) != 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		sendJSONResponse(w, err)
+		errBody := dto.ErrorMessage{Errors: err, Status: http.StatusBadRequest}
+		sendJSONResponse(w, errBody, http.StatusBadRequest)
 		return
 	}
 
@@ -35,10 +35,9 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "failed to create note", http.StatusInternalServerError)
 	}
-	w.WriteHeader(http.StatusCreated)
 	m := make(map[string]uint)
 	m["id"] = noteId
-	sendJSONResponse(w, m)
+	sendJSONResponse(w, m, http.StatusCreated)
 }
 
 func EditNoteContent(w http.ResponseWriter, r *http.Request) {
@@ -49,8 +48,8 @@ func EditNoteContent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := validator.ValidateStruct(editNoteContent); len(err) != 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		sendJSONResponse(w, err)
+		errBody := dto.ErrorMessage{Errors: err, Status: http.StatusBadRequest}
+		sendJSONResponse(w, errBody, http.StatusBadRequest)
 		return
 	}
 
@@ -91,8 +90,8 @@ func EditNoteTitle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := validator.ValidateStruct(editNoteTitle); len(err) != 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		sendJSONResponse(w, err)
+		errBody := dto.ErrorMessage{Errors: err, Status: http.StatusBadRequest}
+		sendJSONResponse(w, errBody, http.StatusBadRequest)
 		return
 	}
 
@@ -178,5 +177,5 @@ func GetNote(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	sendJSONResponse(w, note)
+	sendJSONResponse(w, note, http.StatusOK)
 }
