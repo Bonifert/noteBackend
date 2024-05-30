@@ -49,7 +49,12 @@ func DeleteMe(w http.ResponseWriter, r *http.Request) {
 
 	err := service.DeleteUserById(uint(id))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusConflict)
+		switch {
+		case errors.Is(err, service.ErrNotFound):
+			http.Error(w, "user not found", http.StatusNotFound)
+		default:
+			http.Error(w, err.Error(), http.StatusConflict)
+		}
 	}
 }
 
