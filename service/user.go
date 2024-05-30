@@ -70,23 +70,23 @@ func EditPasswordById(id uint, editPassword dto.NewPassword) error {
 	return nil
 }
 
-func GetUserByUsername(username string) (model.User, error) {
+func GetUserByUsername(username string) (*model.User, error) {
 	db := database.DB
 	user := model.User{}
 	result := db.Where("Username = ?", username).First(&user)
 	if result.Error != nil {
-		return model.User{}, ErrNotFound
+		return nil, ErrNotFound
 	}
-	return user, nil
+	return &user, nil
 }
 
-func GetUserById(userId uint) (model.User, error) {
+func GetUserById(userId uint) (*model.User, error) {
 	user := model.User{}
 	result := database.DB.Where("ID = ?", userId).First(&user)
 	if result.Error != nil {
-		return model.User{}, ErrNotFound
+		return nil, ErrNotFound
 	}
-	return user, nil
+	return &user, nil
 }
 
 func DeleteUserById(userId uint) error {
