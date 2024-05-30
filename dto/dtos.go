@@ -11,8 +11,8 @@ type UserInfo struct {
 }
 
 type ErrorMessage struct {
-	Errors any    `json:"errors"`
-	Status string `json:"status"`
+	Errors any `json:"errors"`
+	Status int `json:"status"`
 }
 
 type NewUsername struct {
