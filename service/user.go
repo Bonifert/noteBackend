@@ -33,17 +33,15 @@ func CreateUser(newUser *dto.UsernameAndPassword) (uint, error) {
 }
 
 func EditUsernameById(id uint, editUser *dto.NewUsername) error {
-	db := database.DB
-	user := model.User{}
-	result := db.First(&user, "ID = ?", id)
-	if result.Error != nil {
-		return ErrNotFound
+	user, err := GetUserById(id)
+	if err != nil {
+		return err
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(editUser.Password)); err != nil {
 		return ErrUnauthorized
 	}
 	user.Username = editUser.NewUsername
-	err := db.Save(&user).Error
+	err = database.DB.Save(&user).Error
 	if err != nil {
 		var pgError *pgconn.PgError
 		if errors.As(err, &pgError) {
@@ -56,11 +54,9 @@ func EditUsernameById(id uint, editUser *dto.NewUsername) error {
 }
 
 func EditPasswordById(id uint, editPassword dto.NewPassword) error {
-	db := database.DB
-	user := model.User{}
-	result := db.First(&user, "ID = ?", id)
-	if result.Error != nil {
-		return ErrNotFound
+	user, err := GetUserById(id)
+	if err != nil {
+		return err
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(editPassword.Password)); err != nil {
 		return ErrUnauthorized
@@ -70,7 +66,7 @@ func EditPasswordById(id uint, editPassword dto.NewPassword) error {
 		return err
 	}
 	user.Password = string(newPassword)
-	db.Save(&user)
+	database.DB.Save(&user)
 	return nil
 }
 
@@ -94,11 +90,11 @@ func GetUserById(userId uint) (model.User, error) {
 }
 
 func DeleteUserById(userId uint) error {
-	user := model.User{}
-	result := database.DB.Where("ID = ?", userId).Delete(&user)
-	if result.Error != nil {
-		return errors.New("unexpected error occurred")
+	user, err := GetUserById(userId)
+	if err != nil {
+		return err
 	}
+	result := database.DB.Delete(&user)
 	if result.RowsAffected == 0 {
 		return errors.New("user already deleted")
 	}
