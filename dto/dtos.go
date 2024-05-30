@@ -26,11 +26,9 @@ type NewPassword struct {
 }
 
 type EditNoteTitle struct {
-	NewTitle string `json:"newName" validate:"validate,gte=1,lte=20"`
-	ID       int    `json:"id" validate:"required"`
+	NewTitle string `json:"newTitle" validate:"required,gte=1,lte=20"`
 }
 
 type EditNoteContent struct {
 	NewContent string `json:"newContent" validate:"required"`
-	ID         int    `json:"id" validate:"required"`
 }
