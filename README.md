@@ -1,5 +1,5 @@
 # About the Project
-This project is a simple Go backend application designed for educational purposes. 
+This project is a simple Go backend application that I developed to learn the basics of golang. 
 It showcases the use of the net/http package for handling HTTP requests and responses, 
 alongside PostgreSQL for data storage and GORM for database interactions. The application includes 
 essential features such as user registration, authentication using JWT tokens, and the capability 
