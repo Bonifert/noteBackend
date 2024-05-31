@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"awesomeProject/dto"
-	"awesomeProject/service"
-	"awesomeProject/validator"
+	"awesomeProject/pkg/dto"
+	"awesomeProject/pkg/service"
+	"awesomeProject/pkg/validator"
 	"encoding/json"
 	"net/http"
 )

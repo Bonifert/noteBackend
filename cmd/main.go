@@ -1,9 +1,9 @@
 package main
 
 import (
-	"awesomeProject/database"
-	"awesomeProject/middleware"
-	"awesomeProject/router"
+	"awesomeProject/pkg/database"
+	"awesomeProject/pkg/middleware"
+	"awesomeProject/pkg/router"
 	"net/http"
 )
 

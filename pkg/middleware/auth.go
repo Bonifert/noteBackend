@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"awesomeProject/config"
-	"awesomeProject/service"
+	"awesomeProject/pkg/config"
+	"awesomeProject/pkg/service"
 	"context"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"

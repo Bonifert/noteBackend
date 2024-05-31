@@ -1,8 +1,8 @@
 package database
 
 import (
-	"awesomeProject/config"
-	"awesomeProject/model"
+	"awesomeProject/pkg/config"
+	model2 "awesomeProject/pkg/model"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -35,7 +35,7 @@ func ConnectDB() {
 	log.Println("Connected to database")
 	db.Logger = logger.Default.LogMode(logger.Info)
 
-	err = db.AutoMigrate(&model.User{}, &model.Note{})
+	err = db.AutoMigrate(&model2.User{}, &model2.Note{})
 	if err != nil {
 		return
 	}

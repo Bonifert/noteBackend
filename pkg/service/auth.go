@@ -1,7 +1,7 @@
 package service
 
 import (
-	"awesomeProject/config"
+	"awesomeProject/pkg/config"
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"

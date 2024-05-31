@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"awesomeProject/dto"
-	"awesomeProject/service"
-	"awesomeProject/validator"
+	"awesomeProject/pkg/dto"
+	service2 "awesomeProject/pkg/service"
+	"awesomeProject/pkg/validator"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -23,10 +23,10 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := service.CreateUser(&newUser)
+	id, err := service2.CreateUser(&newUser)
 	if err != nil {
 		switch {
-		case errors.Is(err, service.ErrDuplicated):
+		case errors.Is(err, service2.ErrDuplicated):
 			http.Error(w, "Username is already taken", http.StatusConflict)
 		default:
 			http.Error(w, "failed to create the user", http.StatusInternalServerError)
@@ -46,10 +46,10 @@ func DeleteMe(w http.ResponseWriter, r *http.Request) {
 	}
 	id, _ := strconv.Atoi(idStr)
 
-	err := service.DeleteUserById(uint(id))
+	err := service2.DeleteUserById(uint(id))
 	if err != nil {
 		switch {
-		case errors.Is(err, service.ErrNotFound):
+		case errors.Is(err, service2.ErrNotFound):
 			http.Error(w, "user not found", http.StatusNotFound)
 		default:
 			http.Error(w, err.Error(), http.StatusConflict)
@@ -65,7 +65,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := service.GetUserById(uint(id))
+	user, err := service2.GetUserById(uint(id))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
@@ -82,7 +82,7 @@ func GetMe(w http.ResponseWriter, r *http.Request) {
 	}
 	id, _ := strconv.Atoi(idStr)
 
-	user, err := service.GetUserById(uint(id))
+	user, err := service2.GetUserById(uint(id))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
@@ -110,14 +110,14 @@ func EditUsername(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := service.EditUsernameById(uint(id), &editUsername)
+	err := service2.EditUsernameById(uint(id), &editUsername)
 	if err != nil {
 		switch {
-		case errors.Is(err, service.ErrUnauthorized):
+		case errors.Is(err, service2.ErrUnauthorized):
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
-		case errors.Is(err, service.ErrNotFound):
+		case errors.Is(err, service2.ErrNotFound):
 			http.Error(w, "user not found", http.StatusNotFound)
-		case errors.Is(err, service.ErrDuplicated):
+		case errors.Is(err, service2.ErrDuplicated):
 			http.Error(w, "username is already taken", http.StatusConflict)
 		default:
 			http.Error(w, "failed to edit username", http.StatusInternalServerError)
@@ -141,12 +141,12 @@ func EditPassword(w http.ResponseWriter, r *http.Request) {
 		sendJSONResponse(w, errBody, http.StatusBadRequest)
 	}
 
-	err := service.EditPasswordById(uint(id), editPassword)
+	err := service2.EditPasswordById(uint(id), editPassword)
 	if err != nil {
 		switch {
-		case errors.Is(err, service.ErrUnauthorized):
+		case errors.Is(err, service2.ErrUnauthorized):
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
-		case errors.Is(err, service.ErrNotFound):
+		case errors.Is(err, service2.ErrNotFound):
 			http.Error(w, "user not found", http.StatusNotFound)
 		default:
 			http.Error(w, "failed to edit password", http.StatusInternalServerError)

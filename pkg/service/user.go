@@ -1,9 +1,9 @@
 package service
 
 import (
-	"awesomeProject/database"
-	"awesomeProject/dto"
-	"awesomeProject/model"
+	"awesomeProject/pkg/database"
+	"awesomeProject/pkg/dto"
+	"awesomeProject/pkg/model"
 	"errors"
 	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"

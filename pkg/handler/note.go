@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"awesomeProject/dto"
-	"awesomeProject/model"
-	"awesomeProject/service"
-	"awesomeProject/validator"
+	"awesomeProject/pkg/dto"
+	"awesomeProject/pkg/model"
+	"awesomeProject/pkg/service"
+	"awesomeProject/pkg/validator"
 	"encoding/json"
 	"errors"
 	"net/http"
