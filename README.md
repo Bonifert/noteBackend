@@ -36,5 +36,5 @@ git clone https://github.com/Bonifert/noteBackend
 
 Run the application using:
 ```shell
-go run main.go
+go run cmd/main.go
 ```
